@@ -164,7 +164,7 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`🚀 REcentral Server running live on http://localhost:${PORT}`);
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 REcentral Server running live on port ${PORT}`);
   console.log(`📂 Server Data directory: ${DATA_DIR}`);
 });
