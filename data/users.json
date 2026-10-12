@@ -1,0 +1,82 @@
+[
+  {
+    "id": "usr_1",
+    "username": "user1",
+    "password": "User@1234",
+    "name": "Rahul Sharma",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_2",
+    "username": "user2",
+    "password": "User@2345",
+    "name": "Priya Patel",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_3",
+    "username": "user3",
+    "password": "User@3456",
+    "name": "Amit Kumar",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_4",
+    "username": "user4",
+    "password": "User@4567",
+    "name": "Sneha Roy",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_5",
+    "username": "user5",
+    "password": "User@5678",
+    "name": "Vikram Singh",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_6",
+    "username": "user6",
+    "password": "User@6789",
+    "name": "Ananya Das",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_7",
+    "username": "user7",
+    "password": "User@7890",
+    "name": "Rohan Gupta",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_8",
+    "username": "user8",
+    "password": "User@8901",
+    "name": "Pooja Verma",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_9",
+    "username": "user9",
+    "password": "User@9012",
+    "name": "Karan Malhotra",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  },
+  {
+    "id": "usr_10",
+    "username": "user10",
+    "password": "User@0123",
+    "name": "Neha Sen",
+    "status": "active",
+    "createdAt": "2026-01-01"
+  }
+]

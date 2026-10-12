@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REcentral - Royal Enfield Call Center Companion</title>
+  <meta name="description" content="All-in-one interactive call center script flow, technical specs database, objection rebuttals, disposition generator, and notepad for Royal Enfield representatives.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Fullscreen Page Preloader -->
+  <div id="page-preloader" class="page-preloader">
+    <div class="loader">
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="text"><span>RECENTRAL</span></div>
+      <div class="line"></div>
+    </div>
+  </div>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <!-- Brand Title -->
+      <div class="brand-logo">
+        <div>
+          <h1 class="brand-title">REcentral</h1>
+          <div class="brand-subtitle">Call Center Script Companion</div>
+        </div>
+      </div>
+
+      <!-- Header Action Controls & Theme Toggle -->
+      <div class="header-inputs">
+        <div class="toggle-switch" title="Toggle Light / Dark Mode">
+          <label class="switch-label" for="theme-toggle-checkbox">
+            <input type="checkbox" class="checkbox" id="theme-toggle-checkbox" onchange="toggleTheme()">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <button class="admin-security-btn" onclick="openAdminVaultModal()" title="Admin Security Verification">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/>
+          </svg>
+        </button>
+        
+        <div class="input-group" style="width: auto;">
+          <label for="input-agent-name">Agent Name</label>
+          <input type="text" id="input-agent-name" placeholder="Enter your name..." value="" oninput="updateAgentName(this.value)" autocomplete="name">
+        </div>
+
+        <div class="input-group">
+          <label for="input-customer-title">Title:</label>
+          <select id="input-customer-title" style="width: 65px;" onchange="updateCustomerTitle(this.value)">
+            <option value="Mr.">Mr.</option>
+            <option value="Ms.">Ms.</option>
+            <option value="Mrs.">Mrs.</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="input-customer-name">Customer:</label>
+          <input type="text" id="input-customer-name" value="" placeholder="Customer Name" oninput="updateCustomerName(this.value)" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label for="header-bike-select">Model:</label>
+          <select id="header-bike-select">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <!-- Language Selector -->
+        <div class="lang-selector-btn-group">
+          <button class="lang-btn active" data-lang="bn">বাংলা (Bengali)</button>
+          <button class="lang-btn" data-lang="hi">हिंदी (Hindi)</button>
+          <button class="lang-btn" data-lang="en">English</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- App Main Navigation Tabs -->
+  <nav class="app-nav">
+    <div class="nav-container">
+      <button class="nav-tab active" data-target="pane-scripts">
+        RE Scripts
+      </button>
+      <button class="nav-tab" data-target="pane-bike-specs">
+        Bike Info & Specs
+      </button>
+      <button class="nav-tab" data-target="pane-rebuttals">
+        Objection Rebuttals
+      </button>
+      <button class="nav-tab" data-target="pane-summary">
+        Call Dispositions
+      </button>
+      <button class="nav-tab" data-target="pane-dealers">
+        Dealer Locator
+      </button>
+      <button class="nav-tab" data-target="pane-notepad">
+        Notepad
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Areas -->
+  <main class="main-content">
+
+    <!-- 1. RE SCRIPTS PANE -->
+    <section id="pane-scripts" class="tab-pane active">
+      <div class="script-grid">
+        
+        <!-- Left: Step Sequence -->
+        <div class="card">
+          <div class="card-title" style="display: flex; align-items: center; justify-content: space-between;">
+            <span>Script Pacing</span>
+            <button class="reset-dispo-btn" onclick="resetScriptRunner()" style="padding: 6px 14px; font-size: 13px; margin: 0;" title="Reset script to Step 1 for next call">
+              Reset Script
+            </button>
+          </div>
+          <div id="script-step-list" class="step-list">
+            <!-- Dynamically populated steps -->
+          </div>
+        </div>
+
+        <!-- Center: Live Teleprompter Box -->
+        <div>
+          <div class="script-teleprompter">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+              <div id="script-step-tag" class="script-header-tag">STEP 1: OPENING</div>
+              
+              <!-- Mini Music Player Bar (visible when music is playing) -->
+              <div id="script-music-indicator" style="display: none; align-items: center; gap: 8px; background: rgba(229, 184, 105, 0.15); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: var(--radius-full); font-size: 12px; color: var(--accent-gold);">
+                <span style="cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" onclick="openAdminVaultModal()" title="Click to open Music Vault">
+                  <span>🎵</span>
+                  <strong id="script-playing-title" style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Song</strong>
+                </span>
+                <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px; background: var(--accent-crimson); color: #fff; border: none;" onclick="stopVaultAudio()" title="Stop music (or press Ctrl / Esc)">
+                  ⏹️ Stop Music
+                </button>
+              </div>
+            </div>
+
+            <div id="script-content-display" class="script-content-box">
+              <!-- Dynamically rendered script content -->
+            </div>
+            
+            <div class="teleprompter-footer" style="display: flex; justify-content: space-between; align-items: center;">
+              <button class="uiverse-btn learn-more prev-btn" onclick="prevScriptStep()">
+                <span class="circle" aria-hidden="true">
+                  <span class="icon arrow arrow-left"></span>
+                </span>
+                <span class="button-text">Previous Step</span>
+              </button>
+              <button class="uiverse-btn learn-more next-btn" onclick="nextScriptStep()">
+                <span class="circle" aria-hidden="true">
+                  <span class="icon arrow arrow-right"></span>
+                </span>
+                <span class="button-text">Next Step</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Quick Live Context Helper -->
+        <div class="right-panel">
+          <div class="card" style="margin-bottom: 16px;">
+            <div class="card-title">Quick Links</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <a href="https://dealers.royalenfield.com/" target="_blank" class="btn btn-secondary" style="justify-content: flex-start;">
+                Dealer Locator
+              </a>
+              <a href="https://www.royalenfield.com/in/en/finance/" target="_blank" class="btn btn-secondary" style="justify-content: flex-start;">
+                RE Finance Portal
+              </a>
+              <a href="https://www.royalenfield.com/in/en/reown/" target="_blank" class="btn btn-secondary" style="justify-content: flex-start;">
+                REown Exchange Portal
+              </a>
+              <a href="https://vision-jq5m.onrender.com/" target="_blank" class="btn btn-secondary" style="justify-content: flex-start;">
+                Vision-ENB
+              </a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Agent Pro-Tips</div>
+            <ul style="padding-left: 16px; font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+              <li>Maintain an enthusiastic & confident tone throughout the call.</li>
+              <li>Always remind the customer to bring their Driving License for test rides.</li>
+              <li>Emphasize Dual Channel ABS safety & signature RE thumping engine.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. BIKE INFO & SPECS PANE -->
+    <section id="pane-bike-specs" class="tab-pane">
+      <div class="specs-toolbar">
+        <div class="input-container">
+          <input type="text" class="input" placeholder="Search model (e.g., Classic 350, Himalayan, Roadster)..." oninput="filterBikeSpecs(this.value)">
+        </div>
+      </div>
+
+      <!-- Quick Selector Pills -->
+      <div id="bike-pills-container" class="bike-selector-pills">
+        <!-- Dynamically populated pills -->
+      </div>
+
+      <!-- Bike Detail Card Sheet -->
+      <div id="bike-spec-detail-sheet" class="bike-spec-sheet">
+        <!-- Dynamically rendered detail view -->
+      </div>
+    </section>
+
+    <!-- 3. OBJECTION REBUTTALS PANE -->
+    <section id="pane-rebuttals" class="tab-pane">
+      <div class="specs-toolbar">
+        <div class="input-container">
+          <input type="text" class="input" placeholder="Search objection topic (e.g., EMI, Finance, Mileage, CIBIL, Offers)..." oninput="filterRebuttals(this.value)">
+        </div>
+      </div>
+
+      <div class="card" style="overflow-x: auto;">
+        <table class="spec-table" id="rebuttals-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">#</th>
+              <th style="width: 240px; color: var(--accent-gold); font-weight: 700;">Objection Topic</th>
+              <th style="color: var(--text-main); font-weight: 700;">Rebuttals</th>
+            </tr>
+          </thead>
+          <tbody id="rebuttals-table-body">
+            <!-- Dynamically rendered table rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. CALL SUMMARY & DISPOSITIONS PANE -->
+    <section id="pane-summary" class="tab-pane">
+      <div class="dispo-grid">
+        
+        <!-- Left: Dispositions & Summary Inputs -->
+        <div class="card">
+          <div class="card-title">Select Call Disposition</div>
+          <div id="dispo-buttons-container" class="dispo-btn-grid">
+            <!-- Dynamically populated dispo buttons -->
+          </div>
+
+          <div class="card-title" style="margin-top: 20px;" id="summary-section-title">CRM Summary Details</div>
+          
+          <!-- Quick Field Auto-Fill Shortcuts -->
+          <div id="std-shortcuts-bar" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; margin-top: 8px;">
+            <label class="checkbox-wrapper" onclick="applyQuickFieldShortcut('NOT_INFORMED', this, event)">
+              <input type="checkbox">
+              <div class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="label">Not Informed</span>
+            </label>
+
+            <label class="checkbox-wrapper" onclick="applyQuickFieldShortcut('NOT_DISCUSS', this, event)">
+              <input type="checkbox">
+              <div class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="label">Not Discuss</span>
+            </label>
+
+            <label class="checkbox-wrapper" onclick="applyQuickFieldShortcut('BUYING_2_MONTHS', this, event)">
+              <input type="checkbox">
+              <div class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="label">Buying Within 2 Months</span>
+            </label>
+
+            <label class="checkbox-wrapper" onclick="applyQuickFieldShortcut('EXCHANGE', this, event)">
+              <input type="checkbox">
+              <div class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="label">Exchange</span>
+            </label>
+
+            <label class="checkbox-wrapper" onclick="applyQuickFieldShortcut('ON_ROAD_PRICE', this, event)">
+              <input type="checkbox">
+              <div class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="label">On Road Price</span>
+            </label>
+
+            <label class="checkbox-wrapper" onclick="applyQuickFieldShortcut('FINANCE_DETAILS', this, event)">
+              <input type="checkbox">
+              <div class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="label">Finance Details</span>
+            </label>
+
+            <label class="checkbox-wrapper" onclick="applyQuickFieldShortcut('BUYING_3_MONTHS', this, event)">
+              <input type="checkbox">
+              <div class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="label">Buying Within 3 Months</span>
+            </label>
+          </div>
+
+          <!-- Container 1: Standard Summary Fields -->
+          <div id="standard-summary-fields" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="input-group">
+              <label for="summary-key-enquiry">Key Enquiry:</label>
+              <input type="text" id="summary-key-enquiry" value="P1" onfocus="setLastFocusedSummaryField('keyEnquiry')" oninput="updateSummaryField('keyEnquiry', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="summary-buying-time">Buying Time:</label>
+              <input type="text" id="summary-buying-time" value="Within 15 Days" onfocus="setLastFocusedSummaryField('buyingTime')" oninput="updateSummaryField('buyingTime', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="summary-test-ride">Test Ride Slot:</label>
+              <input type="text" id="summary-test-ride" value="" placeholder="Date & Time" onfocus="setLastFocusedSummaryField('testRideSlot')" oninput="updateSummaryField('testRideSlot', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="summary-color">Color / Variant:</label>
+              <select id="summary-color" onfocus="setLastFocusedSummaryField('color')" onchange="updateSummaryField('color', this.value)">
+                <option value="Default">Default</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="summary-alt-num">Alternate Num:</label>
+              <input type="text" id="summary-alt-num" value="N/A" onfocus="setLastFocusedSummaryField('altNum')" oninput="updateSummaryField('altNum', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="summary-payment">Payment Mode:</label>
+              <select id="summary-payment" onfocus="setLastFocusedSummaryField('paymentMode')" onchange="updateSummaryField('paymentMode', this.value)">
+                <option value="Finance">Finance</option>
+                <option value="Cash">Cash</option>
+                <option value="Not Informed">Not Informed</option>
+                <option value="Not Discuss">Not Discuss</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Container 2: LOP (Booked / Retail Checklist) Summary Fields -->
+          <div id="lop-summary-fields" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+              <label class="checkbox-wrapper" onclick="applyLopFieldShortcut('Not Informed', this, event)">
+                <input type="checkbox">
+                <div class="checkmark">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <span class="label">Not Informed</span>
+              </label>
+
+              <label class="checkbox-wrapper" onclick="applyLopFieldShortcut('Not Discuss', this, event)">
+                <input type="checkbox">
+                <div class="checkmark">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <span class="label">Not Discuss</span>
+              </label>
+            </div>
+            <div class="input-group">
+              <label for="lop-model">Model:</label>
+              <input type="text" id="lop-model" placeholder="Model Name" onfocus="setLastFocusedLopField('model')" oninput="updateLopField('model', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="lop-purchase-date">Purchase / Booking Date:</label>
+              <input type="text" id="lop-purchase-date" placeholder="DD/MM/YYYY" onfocus="setLastFocusedLopField('purchaseDate')" oninput="updateLopField('purchaseDate', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="lop-dealership">Dealership:</label>
+              <input type="text" id="lop-dealership" placeholder="Dealer Name & Location" onfocus="setLastFocusedLopField('dealership')" oninput="updateLopField('dealership', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="lop-booking-name">Booking Name:</label>
+              <input type="text" id="lop-booking-name" placeholder="Customer Booking Name" onfocus="setLastFocusedLopField('bookingName')" oninput="updateLopField('bookingName', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="lop-booking-mobile">Booking Mobile Number:</label>
+              <input type="text" id="lop-booking-mobile" placeholder="Customer Mobile Number" onfocus="setLastFocusedLopField('bookingMobile')" oninput="updateLopField('bookingMobile', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="lop-reg-no">Registration Number (Retail):</label>
+              <input type="text" id="lop-reg-no" value="N/A" onfocus="setLastFocusedLopField('regNo')" oninput="updateLopField('regNo', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="lop-chassis-no">Chassis Number (Retail):</label>
+              <input type="text" id="lop-chassis-no" value="N/A" onfocus="setLastFocusedLopField('chassisNo')" oninput="updateLopField('chassisNo', this.value)">
+            </div>
+            <div class="input-group">
+              <label for="lop-engine-no">Engine Number (Retail):</label>
+              <input type="text" id="lop-engine-no" value="N/A" onfocus="setLastFocusedLopField('engineNo')" oninput="updateLopField('engineNo', this.value)">
+            </div>
+            <div class="input-group" style="grid-column: 1 / -1;">
+              <label for="lop-alt-num">Alternate Number:</label>
+              <input type="text" id="lop-alt-num" value="N/A" onfocus="setLastFocusedLopField('altNum')" oninput="updateLopField('altNum', this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: CRM Auto-Summary Text -->
+        <div class="card">
+          <div class="card-title">Auto-Generated CRM Summary Note</div>
+          <textarea id="summary-text-box" class="summary-preview-box" readonly></textarea>
+          <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <button class="reset-dispo-btn" onclick="resetCallDispositions()">
+              Reset Dispo
+            </button>
+            <button class="copy-crm-btn" onclick="copySummaryToClipboard()">
+              Copy CRM Note
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. DEALER LOCATOR PANE -->
+    <section id="pane-dealers" class="tab-pane">
+      <div class="specs-toolbar">
+        <div class="input-container">
+          <input type="text" class="input" placeholder="Search dealer by name, city, area, or PIN code..." oninput="filterDealers(this.value)">
+        </div>
+      </div>
+
+      <div id="dealers-grid-container" class="rebuttals-grid">
+        <!-- Dynamically rendered dealer cards -->
+      </div>
+    </section>
+
+    <!-- 5. NOTEPAD PANE -->
+    <section id="pane-notepad" class="tab-pane">
+      <div class="terminal-card">
+        <!-- Terminal Header Toolbar -->
+        <div class="terminal_toolbar">
+          <div class="butt">
+            <button class="term-window-dot dot-red" onclick="clearNotepad()" title="Clear Scratchpad"></button>
+            <button class="term-window-dot dot-yellow" title="Minimize"></button>
+            <button class="term-window-dot dot-green" title="Maximize"></button>
+            <span class="terminal-title-text">agent@re-central: ~/scratchpad.log</span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="notepad-clear-btn" onclick="clearNotepad()" title="Clear Scratchpad">
+              <svg class="svgIcon" viewBox="0 0 448 512">
+                <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM41.6 128L64 464c1.9 26.5 24 48 50.5 48h219c26.5 0 48.6-21.5 50.5-48l22.4-336H41.6z"/>
+              </svg>
+            </button>
+            <button class="copy-crm-btn" onclick="copyNotepad()" style="padding: 10px 18px; font-size: 13px; margin: 0;">
+              Copy Notes
+            </button>
+          </div>
+        </div>
+
+        <!-- Terminal Body -->
+        <div class="terminal_body">
+          <div class="terminal_promt">
+            <span class="terminal_user">re-central@agent</span>:<span class="terminal_location">~/scratchpad</span>$ <span class="terminal_bling"># Live Call Notes (Auto-saved)</span>
+          </div>
+          <textarea id="notepad-area" class="terminal-notepad-area" placeholder="Type quick call notes, customer queries, special requests, or callback times here... (Auto-saved automatically)"></textarea>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Dual Login Security Verification Modal -->
+  <div id="admin-vault-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card music-hub-modal-card" id="music-hub-modal-card">
+      <div class="modal-header">
+        <div id="modal-header-title-wrapper" style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--accent-gold); font-size: 15px;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16" fill="currentColor">
+            <path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/>
+          </svg>
+          <span id="music-modal-title">System Security Verification</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeAdminVaultModal()">✕</button>
+      </div>
+
+      <!-- State 1: Dual Login Portal (Admin Login / User Login) -->
+      <div id="vault-login-view" class="modal-body" style="padding: 14px;">
+        <!-- Dual Login Tab Switcher -->
+        <div class="dual-login-tabs">
+          <button class="dual-login-tab-btn active" id="tab-btn-admin-login" onclick="switchLoginMode('admin')">
+            <svg viewBox="0 0 448 512" width="13" height="13" fill="currentColor"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg>
+            1. Admin Login
+          </button>
+          <button class="dual-login-tab-btn" id="tab-btn-user-login" onclick="switchLoginMode('user')">
+            <svg viewBox="0 0 448 512" width="13" height="13" fill="currentColor"><path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"/></svg>
+            2. User Login
+          </button>
+        </div>
+
+        <!-- 1. Admin Login View -->
+        <div id="login-section-admin" class="praashoo-form" style="margin-top: 12px;">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <div style="margin-bottom: 6px; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#ef4444">
+                <path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+              </svg>
+            </div>
+            <div style="font-size: 13px; font-weight: 700; color: #ef4444; margin-bottom: 3px;">ADMIN ACCESS PORTAL</div>
+            <div style="font-size: 11px; color: var(--text-muted);">Access central administration and system control hub.</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+            <div class="praashoo-field">
+              <svg class="praashoo-input-icon" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+              </svg>
+              <input type="text" id="vault-userid-input" class="praashoo-input-field" placeholder="Admin Username" autocomplete="off" onkeydown="if(event.key==='Enter') loginAdminVault()">
+            </div>
+
+            <div class="praashoo-field" style="position: relative;">
+              <svg class="praashoo-input-icon" viewBox="0 0 16 16">
+                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"></path>
+              </svg>
+              <input type="password" id="vault-password-input" class="praashoo-input-field" placeholder="Admin Password" autocomplete="off" onkeydown="if(event.key==='Enter') loginAdminVault()">
+              <button type="button" class="pass-peek-btn" onclick="togglePasswordVisibility('vault-password-input', this)" title="Toggle password visibility">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="praashoo-btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="loginAdminVault()">
+            Verify Credentials
+          </button>
+
+          <div style="text-align: center;">
+            <button class="praashoo-btn-danger" style="width: 100%; font-size: 11px; padding: 6px 10px;" onclick="toggleEmergencyView(true)">
+              Forgot Admin Password?
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. User Login View -->
+        <div id="login-section-user" class="praashoo-form" style="display: none; margin-top: 12px;">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <div style="margin-bottom: 6px; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#38bdf8">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
+            <div style="font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 3px;">USER AUTHORIZATION PORTAL</div>
+            <div style="font-size: 11px; color: var(--text-muted);">Enter your authorized credentials to proceed.</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+            <div class="praashoo-field">
+              <svg class="praashoo-input-icon" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+              </svg>
+              <input type="text" id="user-login-id-input" class="praashoo-input-field" placeholder="Username" autocomplete="off" onkeydown="if(event.key==='Enter') loginUserPanel()">
+            </div>
+
+            <div class="praashoo-field" style="position: relative;">
+              <svg class="praashoo-input-icon" viewBox="0 0 16 16">
+                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"></path>
+              </svg>
+              <input type="password" id="user-login-pass-input" class="praashoo-input-field" placeholder="Password" autocomplete="off" onkeydown="if(event.key==='Enter') loginUserPanel()">
+              <button type="button" class="pass-peek-btn" onclick="togglePasswordVisibility('user-login-pass-input', this)" title="Toggle password visibility">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="praashoo-btn-primary" style="width: 100%; margin-bottom: 10px; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border-color: #38bdf8;" onclick="loginUserPanel()">
+            Verify Credentials
+          </button>
+        </div>
+      </div>
+
+      <!-- State 1.5: Emergency Master Override View -->
+      <div id="vault-emergency-view" class="modal-body" style="display: none; padding: 14px;">
+        <div class="praashoo-form">
+          <div style="text-align: center; margin-bottom: 14px;">
+            <div style="margin-bottom: 8px; display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); box-shadow: 0 0 16px rgba(239, 68, 68, 0.35);">
+              <span style="font-size: 22px;">🚨</span>
+            </div>
+            <div style="font-size: 13px; font-weight: 700; color: #ef4444; margin-bottom: 4px; text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);">EMERGENCY RECOVERY</div>
+            <div style="font-size: 11px; color: var(--text-muted);">Enter Recovery Code to override credentials and reset admin password.</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+            <div class="praashoo-field">
+              <svg class="praashoo-input-icon" viewBox="0 0 512 512">
+                <path d="M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0S160 78.8 160 176c0 18.7 2.9 36.6 8.3 53.4L8 389.5c-5.1 5.1-8 12.2-8 19.5V480c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V448h32c17.7 0 32-14.3 32-32V384h32c17.7 0 32-14.3 32-32v-8.5c16.8 5.4 34.7 8.5 53.4 8.5h.6zm48-224a48 48 0 1 1 0-96 48 48 0 1 1 0 96z"/>
+              </svg>
+              <input type="password" id="vault-emergency-key" class="praashoo-input-field" placeholder="Recovery Code" autocomplete="off">
+            </div>
+            <div class="praashoo-field">
+              <svg class="praashoo-input-icon" viewBox="0 0 16 16">
+                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"></path>
+              </svg>
+              <input type="password" id="vault-emergency-newpass" class="praashoo-input-field" placeholder="Set New Password" autocomplete="off">
+            </div>
+          </div>
+
+          <button class="praashoo-btn-primary" style="width: 100%; margin-bottom: 12px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); border-color: #ef4444;" onclick="executeEmergencyRecovery()">
+            Override Credentials & Reset
+          </button>
+          
+          <div style="text-align: center;">
+            <button class="btn btn-secondary" style="font-size: 11px; padding: 6px 10px; width: 100%; border-radius: 8px;" onclick="toggleEmergencyView(false)">
+              Back to Standard Login
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- State 2: Unlocked Hub View (Admin / User) -->
+      <div id="vault-player-view" class="modal-body" style="display: none; padding: 14px;">
+        <!-- Hub Top Banner: User Info, Logout & Close Controls -->
+        <div class="hub-user-bar">
+          <div class="hub-role-badge-container">
+            <button class="btn btn-secondary" style="padding: 5px 12px; font-size: 11px; color: #ef4444; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.08); font-weight: 700;" onclick="logoutMusicPanel()" id="hub-signout-btn" title="Sign Out (Esc)">
+              Sign Out
+            </button>
+            <span id="hub-role-badge" class="hub-role-pill user">USER</span>
+            <span id="hub-user-display-name" style="font-size: 12px; font-weight: 700; color: #38bdf8; letter-spacing: 0.3px;">User Name</span>
+          </div>
+          <button class="btn btn-secondary" style="padding: 5px 14px; font-size: 11px; color: var(--text-muted); border-color: var(--border-color); background: rgba(255, 255, 255, 0.05); font-weight: 600;" onclick="closeAdminVaultModal()" title="Close Panel (Esc)">
+            Close Panel
+          </button>
+        </div>
+
+        <!-- Admin Only Sub-Navigation Tabs -->
+        <div id="admin-hub-subnav" class="admin-subnav-bar" style="display: none;">
+          <button class="admin-subnav-btn active" id="btn-subnav-player" onclick="switchAdminSubTab('player')">
+            Music Player
+          </button>
+          <button class="admin-subnav-btn" id="btn-subnav-users" onclick="switchAdminSubTab('users')">
+            ULC <span class="badge-count" id="badge-total-users">10</span>
+          </button>
+          <button class="admin-subnav-btn" id="btn-subnav-cms" onclick="switchAdminSubTab('cms')">
+            CMS
+          </button>
+          <button class="admin-subnav-btn" id="btn-subnav-security" onclick="switchAdminSubTab('security')">
+            Security & Settings
+          </button>
+        </div>
+
+        <!-- Subtab 1: Music Player View (Available to both Admin and User) -->
+        <div id="hub-section-player" class="hub-subtab-content">
+          <!-- HTML5 Audio Player & Controls -->
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px;">
+            <div id="vault-track-title" style="font-weight: 700; color: var(--accent-gold); margin-bottom: 10px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;">
+              🎵 Select a track to start playing
+            </div>
+            
+            <audio id="vault-audio-player" style="display: none;"></audio>
+
+            <!-- Progress Scrubber -->
+            <div class="player-progress-container">
+              <span id="vault-current-time" class="player-time-display">0:00</span>
+              <input type="range" id="vault-seek-bar" min="0" max="100" value="0" step="0.1" 
+                     oninput="onVaultSeekInput(this.value)" 
+                     onchange="onVaultSeekChange(this.value)"
+                     onmousedown="startVaultSeeking()"
+                     onmouseup="stopVaultSeeking(this.value)"
+                     ontouchstart="startVaultSeeking()"
+                     ontouchend="stopVaultSeeking(this.value)"
+                     class="player-range-slider" title="Drag or click anywhere on the bar to seek forward/backward">
+              <span id="vault-duration-time" class="player-time-display">0:00</span>
+            </div>
+
+            <!-- Main Controls Row -->
+            <div class="player-controls-row" style="margin: 10px 0;">
+              <button id="vault-shuffle-btn" class="player-ctrl-btn" title="Shuffle Playlist" onclick="toggleVaultShuffle()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V160H352c-10.1 0-19.6 4.7-25.6 12.8L284 232.9 243.5 178.8 277 134c18.1-24.2 46.5-38 75-38h32V64c0-13 7.8-24.6 19.8-29.6zM228 333.1L187.5 279 154 323.7c-18.1 24.2-46.5 38-75 38H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H79c10.1 0 19.6-4.7 25.6-12.8L147 225.1 187.5 279 228 333.1zM403.8 290.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V416H352c-28.5 0-56.9-13.8-75-38l-49-65.3 40.5-54.1L316.4 323.2c6 8.1 15.5 12.8 25.6 12.8h42v-32c0-13 7.8-24.6 19.8-29.6z"/>
+                </svg>
+              </button>
+
+              <button class="player-ctrl-btn" title="Previous Track" onclick="playPreviousVaultTrack()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path d="M459.5 440.6c9.5 7.9 22.8 9.7 34.1 4.4s18.4-16.6 18.4-29V96c0-12.4-7.2-23.7-18.4-29s-24.5-3.6-34.1 4.4L288 214.3V96c0-12.4-7.2-23.7-18.4-29s-24.5-3.6-34.1 4.4L35.5 227.4C25.8 235.4 20 247.4 20 260s5.8 24.6 15.5 32.6l200 156c9.5 7.9 22.8 9.7 34.1 4.4s18.4-16.6 18.4-29V305.7l171.5 134.9z"/>
+                </svg>
+              </button>
+              
+              <!-- Play/Pause Component -->
+              <label class="play-pause-container" title="Play / Pause">
+                <input type="checkbox" id="vault-play-pause-toggle" onchange="toggleVaultPlayPauseCheckbox(this)">
+                <svg class="play" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512">
+                  <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path>
+                </svg>
+                <svg class="pause" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512">
+                  <path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"></path>
+                </svg>
+              </label>
+
+              <button class="player-ctrl-btn" title="Next Track" onclick="playNextVaultTrack()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416V96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4L224 214.3V96c0-12.4 7.2-23.7 18.4-29s24.5-3.6 34.1 4.4l200 156c9.7 8 15.5 20 15.5 32.6s-5.8 24.6-15.5 32.6l-200 156c-9.5 7.9-22.8 9.7-34.1 4.4s-18.4-16.6-18.4-29V305.7L52.5 440.6z"/>
+                </svg>
+              </button>
+
+              <button id="vault-repeat-btn" class="player-ctrl-btn" title="Repeat Single Track" onclick="toggleVaultRepeat()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96h160v32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32V64H160C71.6 64 0 135.6 0 224zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96H192V352c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V448h160c88.4 0 160-71.6 160-160z"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Volume Control -->
+            <div class="player-volume-container">
+              <button class="player-vol-icon-btn" onclick="toggleVaultMute()" title="Mute / Unmute">
+                <span id="vault-vol-icon">🔊</span>
+              </button>
+              <input type="range" id="vault-volume-slider" min="0" max="1" step="0.01" value="0.85" oninput="setVaultVolume(this.value)" class="player-range-slider player-vol-slider" title="Volume Control">
+              <span id="vault-vol-percent" style="font-size: 11px; font-weight: 700; color: var(--text-muted); min-width: 32px; text-align: right;">85%</span>
+            </div>
+          </div>
+
+          <!-- Playlist Category Tabs -->
+          <div class="vault-playlist-tabs" id="vault-playlist-tabs-container">
+            <!-- Dynamically populated playlist tabs -->
+          </div>
+
+          <!-- Search Tracks -->
+          <label class="search-label" for="vault-search-box">
+            <input type="text" id="vault-search-box" required placeholder="Search songs by title or artist..." oninput="filterVaultTracks(this.value)">
+            <span class="slash-icon">/</span>
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 56.966 56.966">
+              <path d="M55.146 51.887 41.588 37.786A22.926 22.926 0 0 0 46.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 0 0 .083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z"></path>
+            </svg>
+          </label>
+
+          <!-- Playlist Container -->
+          <div style="margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">
+              <span id="vault-playlist-heading">🎶 Playlist</span>
+              <span><span id="vault-track-count">0</span> Tracks</span>
+            </div>
+            <div id="vault-playlist-container" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+              <!-- Dynamically rendered track list -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Subtab 2: User Login Control Center (Admin Only) -->
+        <div id="hub-section-users" class="hub-subtab-content" style="display: none;">
+          <!-- Master Global User Login Control Box -->
+          <div class="user-ctrl-master-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+                  <span>Global User Login Access</span>
+                  <span id="global-user-status-pill" class="badge-status-pill active">ENABLED</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                  Master toggle for user access. When disabled, you can still grant selective login permission to multiple users below.
+                </div>
+              </div>
+              <label class="master-switch">
+                <input type="checkbox" id="toggle-global-user-access" checked onchange="handleGlobalUserLoginToggle(this.checked)">
+                <span class="master-slider"></span>
+              </label>
+            </div>
+
+            <!-- Live Stats Summary Row -->
+            <div class="user-stats-grid" style="margin-top: 12px;">
+              <div class="user-stat-card">
+                <div class="stat-num" id="stat-total-users">10</div>
+                <div class="stat-lbl">Total IDs</div>
+              </div>
+              <div class="user-stat-card">
+                <div class="stat-num stat-green" id="stat-active-users">10</div>
+                <div class="stat-lbl">Permitted</div>
+              </div>
+              <div class="user-stat-card">
+                <div class="stat-num stat-red" id="stat-disabled-users">0</div>
+                <div class="stat-lbl">Blocked</div>
+              </div>
+              <div class="user-stat-card">
+                <div class="stat-num stat-blue" id="stat-global-state">OPEN</div>
+                <div class="stat-lbl">Global Access</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Control Actions Toolbar -->
+          <div class="user-ctrl-toolbar">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="openAddUserModal()" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.08); font-weight: 700;">
+                + Add New ID
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="grantAllUsersAccess()" style="color: #22c55e; border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.08); font-weight: 700;" title="Grant permission to all users">
+                Allow All
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="revokeAllUsersAccess()" style="color: #f97316; border-color: rgba(249, 115, 22, 0.4); background: rgba(249, 115, 22, 0.08); font-weight: 700;" title="Revoke permission from all users">
+                Block All
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="copyAllUserCredentials()" style="color: var(--accent-gold); border-color: rgba(229, 184, 105, 0.4); background: rgba(229, 184, 105, 0.08); font-weight: 700;">
+                Copy All 10 Credentials
+              </button>
+            </div>
+            <input type="text" id="user-mgmt-search" placeholder="Search IDs..." oninput="renderUserManagementTable(this.value)" class="user-search-input">
+          </div>
+
+          <!-- 10 Users Control Table -->
+          <div class="user-table-responsive-container">
+            <table class="user-mgmt-table">
+              <thead>
+                <tr>
+                  <th style="width: 38px;">#</th>
+                  <th>Username</th>
+                  <th>Full Name</th>
+                  <th>Password</th>
+                  <th>Login Permission</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="user-mgmt-table-body">
+                <!-- Dynamically rendered 10 user rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Subtab 3: RE Content CMS (Admin Only) -->
+        <div id="hub-section-cms" class="hub-subtab-content" style="display: none;">
+          <!-- CMS Sub-navigation Tabs -->
+          <div class="cms-subnav-bar">
+            <button class="cms-subnav-btn active" id="btn-cms-tab-scripts" onclick="switchCmsSubTab('scripts')">
+              RE Scripts & Pacing (14 Steps)
+            </button>
+            <button class="cms-subnav-btn" id="btn-cms-tab-bikes" onclick="switchCmsSubTab('bikes')">
+              Bike Models & Pricing
+            </button>
+            <button class="cms-subnav-btn" id="btn-cms-tab-rebuttals" onclick="switchCmsSubTab('rebuttals')">
+              Objection Rebuttals
+            </button>
+            <div style="margin-left: auto; display: flex; gap: 6px;">
+              <button class="btn btn-secondary btn-sm" onclick="syncAllCmsToSupabase()" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.06); font-size: 11px; padding: 4px 10px;" title="Merge and push all current scripts, bikes, and rebuttals to Supabase">
+                Push All to Supabase
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="resetCmsToDefaults()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3); font-size: 11px; padding: 4px 10px;">
+                Reset CMS Defaults
+              </button>
+            </div>
+          </div>
+
+          <!-- CMS Subpane 1: RE Scripts & Pacing (14 Steps) -->
+          <div id="cms-subpane-scripts" class="cms-subpane-content">
+            <!-- Language Selector & Controls Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                <span style="font-size: 12px; font-weight: 700; color: var(--accent-gold); margin-right: 4px;">Language:</span>
+                <button class="btn btn-secondary btn-sm active" id="btn-cms-lang-bn" onclick="switchCmsScriptLang('bn')">Bengali (বাংলা)</button>
+                <button class="btn btn-secondary btn-sm" id="btn-cms-lang-hi" onclick="switchCmsScriptLang('hi')">Hindi (हिंदी)</button>
+                <button class="btn btn-secondary btn-sm" id="btn-cms-lang-en" onclick="switchCmsScriptLang('en')">English</button>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="text" id="cms-script-search" placeholder="Search script steps..." oninput="renderCmsScriptsList(this.value)" class="user-search-input" style="max-width: 190px;">
+                <button class="btn btn-secondary btn-sm" onclick="openCmsAddScriptModal()" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.08); font-weight: 700;">
+                  + Add Script Step
+                </button>
+              </div>
+            </div>
+
+            <!-- 2-Column Split Dashboard: Steps List (Left) & Inspector + Pitches (Right) -->
+            <div class="cms-scripts-split-layout">
+              <!-- Left Column: Scripts List -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">
+                    Pacing Flow Sequence (<span id="cms-script-count-display">14 Steps</span>)
+                  </span>
+                  <span style="font-size: 11px; color: var(--text-muted);">Click any step to inspect</span>
+                </div>
+                <div id="cms-scripts-list-container" style="max-height: 540px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;">
+                  <!-- Dynamically rendered script steps -->
+                </div>
+              </div>
+
+              <!-- Right Column: Inspector Box -->
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Step Inspector Box -->
+                <div class="cms-panel-box" id="cms-inspector-box" style="height: 100%; min-height: 520px; display: flex; flex-direction: column;">
+                  <div class="cms-panel-box-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span class="cms-step-num-badge" id="cms-inspect-badge">1</span>
+                      <strong style="color: var(--accent-gold); font-size: 13px;" id="cms-inspect-title">Step 1: Opening</strong>
+                    </div>
+                    <button class="mini-action-btn edit-btn" id="cms-inspect-edit-btn" onclick="openSelectedCmsScriptEdit()" title="Edit this step">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-svg-icon edit-icon"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">
+                    Step ID: <code class="cms-highlight-tag" id="cms-inspect-id">opening</code>
+                  </div>
+                  <div id="cms-inspect-body" style="font-size: 12px; color: var(--text-main); line-height: 1.6; white-space: pre-line; background: rgba(0,0,0,0.25); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.05); flex: 1; overflow-y: auto;">
+                    Select a step from the list on the left to inspect.
+                  </div>
+                  <div style="margin-top: 12px; text-align: right;">
+                    <button class="praashoo-btn-primary" style="padding: 7px 16px; font-size: 11px;" onclick="openSelectedCmsScriptEdit()">
+                      Edit This Step
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Hidden Model Pitches Box -->
+                <div class="cms-panel-box" id="cms-model-pitches-box" style="display: none;">
+                  <div class="cms-panel-box-header">
+                    <strong style="color: var(--accent-gold); font-size: 13px;">Model Pitch Templates</strong>
+                  </div>
+                  <select id="cms-pitch-bike-select" onchange="loadCmsModelPitchFields()"></select>
+                  <textarea id="cms-pitch-bn-text"></textarea>
+                  <textarea id="cms-pitch-hi-text"></textarea>
+                  <textarea id="cms-pitch-en-text"></textarea>
+                  <button onclick="saveCmsModelPitch()">Save Model Pitch</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CMS Subpane 2: Bike Models & Pricing -->
+          <div id="cms-subpane-bikes" class="cms-subpane-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div class="cms-stat-strip">
+                <span class="cms-stat-pill green">Total Models: <strong id="cms-stat-total-bikes">15</strong></span>
+                <span class="cms-stat-pill blue">Price Range: <strong>₹1.50L - ₹4.35L</strong></span>
+                <span class="cms-stat-pill">350cc / 450cc / 650cc</span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="text" id="cms-bike-search" placeholder="Search models or specs..." oninput="renderCmsBikesList(this.value)" class="user-search-input" style="max-width: 200px;">
+                <button class="btn btn-secondary btn-sm" onclick="openCmsAddBikeModal()" style="color: #22c55e; border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.08); font-weight: 700;">
+                  + Add New Bike Model
+                </button>
+              </div>
+            </div>
+
+            <!-- Bikes Table / Cards Container -->
+            <div class="user-table-responsive-container" style="max-height: 540px;">
+              <table class="user-mgmt-table">
+                <thead>
+                  <tr>
+                    <th style="width: 38px;">#</th>
+                    <th>Model Name</th>
+                    <th>Category</th>
+                    <th>Ex-Showroom Price</th>
+                    <th>Engine & Power</th>
+                    <th>Mileage</th>
+                    <th style="text-align: right; width: 90px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="cms-bikes-table-body">
+                  <!-- Dynamically rendered bikes -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- CMS Subpane 3: Objection Rebuttals -->
+          <div id="cms-subpane-rebuttals" class="cms-subpane-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div class="cms-stat-strip">
+                <span class="cms-stat-pill">Total Rebuttals: <strong id="cms-stat-total-rebuttals">13</strong></span>
+                <span class="cms-stat-pill blue">Real-time Agent Guide</span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="text" id="cms-rebuttal-search" placeholder="Search objection topics..." oninput="renderCmsRebuttalsList(this.value)" class="user-search-input" style="max-width: 200px;">
+                <button class="btn btn-secondary btn-sm" onclick="openCmsAddRebuttalModal()" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.08); font-weight: 700;">
+                  + Add New Rebuttal
+                </button>
+              </div>
+            </div>
+
+            <!-- Rebuttals Table Container -->
+            <div class="user-table-responsive-container" style="max-height: 540px;">
+              <table class="user-mgmt-table">
+                <thead>
+                  <tr>
+                    <th style="width: 38px;">#</th>
+                    <th style="width: 220px;">Objection Topic</th>
+                    <th>Rebuttal Script Response</th>
+                    <th style="text-align: right; width: 90px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="cms-rebuttals-table-body">
+                  <!-- Dynamically rendered rebuttals -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subtab 4: Admin Security Settings (Admin Only) -->
+        <div id="hub-section-security" class="hub-subtab-content" style="display: none;">
+          <div style="background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px;">
+            <div style="font-size: 13px; font-weight: 700; color: var(--accent-gold); margin-bottom: 8px;">
+              ⚙️ Change Admin User ID & Password
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+              <div>
+                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Admin Username</label>
+                <input type="text" id="new-vault-userid" placeholder="New Admin Username" style="width: 100%; padding: 8px 12px; font-size: 12px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-main);">
+              </div>
+              <div>
+                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">New Admin Password</label>
+                <input type="password" id="new-vault-password" placeholder="New Admin Password" style="width: 100%; padding: 8px 12px; font-size: 12px; border-radius: var(--radius-sm); background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-main);">
+              </div>
+              <button class="praashoo-btn-primary" style="padding: 9px; font-size: 12px; margin-top: 4px;" onclick="changeAdminCredentials()">
+                💾 Save Admin Credentials
+              </button>
+            </div>
+          </div>
+
+          <div style="background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-md); padding: 12px; font-size: 11px; color: var(--text-muted);">
+            <strong style="color: #ef4444;">🛡️ Security Notice:</strong>
+            All password changes, account toggle switches, and user management settings take effect immediately in real time.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Add / Edit User Modal Dialog -->
+  <div id="user-edit-modal" class="modal-overlay" style="display: none; z-index: 100000;">
+    <div class="modal-card" style="max-width: 380px;">
+      <div class="modal-header">
+        <div style="font-weight: 700; color: var(--accent-gold); font-size: 14px;" id="user-edit-modal-title">
+          Edit User Account
+        </div>
+        <button class="modal-close-btn" onclick="closeUserEditModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <input type="hidden" id="edit-user-id">
+        <div>
+          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Username</label>
+          <input type="text" id="edit-user-username" placeholder="e.g. user1" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);" onkeydown="if(event.key==='Enter') saveUserEditForm()">
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Full Name / Display Name</label>
+          <input type="text" id="edit-user-name" placeholder="e.g. Rahul Sharma" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);" onkeydown="if(event.key==='Enter') saveUserEditForm()">
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Password</label>
+          <input type="text" id="edit-user-password" placeholder="e.g. User@1234" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);" onkeydown="if(event.key==='Enter') saveUserEditForm()">
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Account Status</label>
+          <select id="edit-user-status" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+            <option value="active">Active (Login Allowed) 🟢</option>
+            <option value="disabled">Disabled (Login Blocked) 🔴</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <button class="praashoo-btn-primary" style="flex: 1; padding: 8px;" onclick="saveUserEditForm()">
+            💾 Save Changes
+          </button>
+          <button class="btn btn-secondary" style="padding: 8px 14px; font-size: 12px;" onclick="closeUserEditModal()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CMS Script Step Edit Modal -->
+  <div id="cms-script-modal" class="modal-overlay" style="display: none; z-index: 100000;">
+    <div class="modal-card wide-layout" style="max-width: 580px;">
+      <div class="modal-header">
+        <div style="font-weight: 700; color: var(--accent-gold); font-size: 14px;" id="cms-script-modal-title">
+          Edit Script Step
+        </div>
+        <button class="modal-close-btn" onclick="closeCmsScriptModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <input type="hidden" id="cms-edit-script-lang">
+        <input type="hidden" id="cms-edit-script-index">
+        <div class="cms-grid-2col">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Step ID</label>
+            <input type="text" id="cms-edit-script-id" placeholder="e.g. opening" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Step Title</label>
+            <input type="text" id="cms-edit-script-title" placeholder="e.g. Opening" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted);">Script Text Template</label>
+            <span style="font-size: 10px; color: var(--accent-gold);">Available tags: &lt;Agent Name&gt;, &lt;Customer Name&gt;, &lt;Bike Model&gt;, &lt;Test Ride Slot&gt;</span>
+          </div>
+          <textarea id="cms-edit-script-text" rows="5" style="width: 100%; padding: 10px; font-size: 13px; line-height: 1.5; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); font-family: inherit;"></textarea>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 6px;">
+          <button class="praashoo-btn-primary" style="flex: 1; padding: 9px;" onclick="saveCmsScriptEdit()">
+            Save Script Step
+          </button>
+          <button class="btn btn-secondary" style="padding: 9px 16px; font-size: 12px;" onclick="closeCmsScriptModal()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CMS Bike Model Edit / Add Modal -->
+  <div id="cms-bike-modal" class="modal-overlay" style="display: none; z-index: 100000;">
+    <div class="modal-card wide-layout" style="max-width: 650px; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <div style="font-weight: 700; color: var(--accent-gold); font-size: 14px;" id="cms-bike-modal-title">
+          Edit Motorcycle Model
+        </div>
+        <button class="modal-close-btn" onclick="closeCmsBikeModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;">
+        <input type="hidden" id="cms-edit-bike-original-id">
+        <div class="cms-grid-2col">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Model ID (Slug)</label>
+            <input type="text" id="cms-bike-id" placeholder="e.g. hunter-350" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Model Display Name</label>
+            <input type="text" id="cms-bike-name" placeholder="e.g. Hunter 350" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+        </div>
+        <div class="cms-grid-2col">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Category / Segment</label>
+            <input type="text" id="cms-bike-category" placeholder="e.g. Roadster, Cruiser, Adventure, Heritage" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Starting Ex-Showroom Price</label>
+            <input type="text" id="cms-bike-price" placeholder="e.g. ₹1,49,900" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+        </div>
+        <div class="cms-grid-2col">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Engine Displacement & Cooling</label>
+            <input type="text" id="cms-bike-engine" placeholder="e.g. 349.34 cc, Single Cylinder, 4 Stroke, Air-Oil Cooled" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Max Power</label>
+            <input type="text" id="cms-bike-power" placeholder="e.g. 20.2 bhp @ 6100 rpm" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+        </div>
+        <div class="cms-grid-2col">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Max Torque</label>
+            <input type="text" id="cms-bike-torque" placeholder="e.g. 27 Nm @ 4000 rpm" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Approx Mileage</label>
+            <input type="text" id="cms-bike-mileage" placeholder="e.g. ~36.2 km/L" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+        </div>
+        <div class="cms-grid-2col">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Fuel Tank Capacity</label>
+            <input type="text" id="cms-bike-fuel" placeholder="e.g. 13 Litres" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Kerb Weight</label>
+            <input type="text" id="cms-bike-weight" placeholder="e.g. 181 kg" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Official Website URL</label>
+          <input type="text" id="cms-bike-url" placeholder="https://www.royalenfield.com/in/en/motorcycles/hunter-350/" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">MIY Configurator URL</label>
+          <input type="text" id="cms-bike-config-url" placeholder="https://makeityours.royalenfield.com/configurator/hunter-350" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <button class="praashoo-btn-primary" style="flex: 1; padding: 10px;" onclick="saveCmsBikeEdit()">
+            Save Motorcycle Model & Specs
+          </button>
+          <button class="btn btn-secondary" style="padding: 10px 18px; font-size: 12px;" onclick="closeCmsBikeModal()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CMS Objection Rebuttal Edit / Add Modal -->
+  <div id="cms-rebuttal-modal" class="modal-overlay" style="display: none; z-index: 100000;">
+    <div class="modal-card wide-layout" style="max-width: 580px;">
+      <div class="modal-header">
+        <div style="font-weight: 700; color: var(--accent-gold); font-size: 14px;" id="cms-rebuttal-modal-title">
+          Edit Objection Rebuttal
+        </div>
+        <button class="modal-close-btn" onclick="closeCmsRebuttalModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <input type="hidden" id="cms-edit-rebuttal-original-id">
+        <div class="cms-grid-2col">
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Rebuttal ID (Slug)</label>
+            <input type="text" id="cms-rebuttal-id" placeholder="e.g. offers" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Objection Topic Name</label>
+            <input type="text" id="cms-rebuttal-topic" placeholder="e.g. Offers & Exchange Benefit" style="width: 100%; padding: 8px 10px; font-size: 12px; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);">
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 11px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Rebuttal Script Response</label>
+          <textarea id="cms-rebuttal-text" rows="5" placeholder="Enter complete rebuttal script response..." style="width: 100%; padding: 10px; font-size: 13px; line-height: 1.5; border-radius: var(--radius-sm); background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); font-family: inherit;"></textarea>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 6px;">
+          <button class="praashoo-btn-primary" style="flex: 1; padding: 9px;" onclick="saveCmsRebuttalEdit()">
+            Save Objection Rebuttal
+          </button>
+          <button class="btn btn-secondary" style="padding: 9px 16px; font-size: 12px;" onclick="closeCmsRebuttalModal()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="dealers.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
